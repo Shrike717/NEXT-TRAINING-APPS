@@ -29,14 +29,19 @@ export async function GET() {
 
 // Delete a topic:
 export async function DELETE(request) {
-	// Here we destructure the request. This is a promise therefore await
+	// Here we destructure the id from searchParams. This is a promise therefore await
 	const id = await request.nextUrl.searchParams.get('id');
-	console.log(id);
+	// console.log('[function DELETE] id:', id);
 
 	// Here we connect to the MongoDB database:
 	await connectMongoDB();
 	// Here we delete a topic:
 	await Topic.findByIdAndDelete(id);
 	// Here we return a NexResponse:
-	return NextResponse.json({ message: 'Topic deleted' }, { status: 200 });
+	return NextResponse.json(
+		{ message: 'Topic deleted' },
+		{
+			status: 200,
+		}
+	);
 }

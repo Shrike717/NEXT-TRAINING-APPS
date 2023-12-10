@@ -57,6 +57,7 @@ function LoginPage() {
       <form
         onSubmit={handleSubmit}
         className="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md"
+        style={{ width: "400px" }}
       >
         <div className="mb-4">
           <label

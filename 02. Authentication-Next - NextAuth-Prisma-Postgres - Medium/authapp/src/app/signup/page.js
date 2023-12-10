@@ -27,7 +27,7 @@ function SignIn() {
     };
 
     // Make call to backend to create user:
-    const res = await fetch("http://localhost:3000/api/user/create", {
+    const res = await fetch("http://localhost:3000/user/create", {
       method: "POST",
       body: JSON.stringify(userData),
       headers: {
@@ -37,6 +37,7 @@ function SignIn() {
 
     if (res.ok) {
       const data = await res.json();
+      console.log("[Signup Form] Response data:", data);
 
       // registration success
     } else {
@@ -48,6 +49,7 @@ function SignIn() {
       <form
         onSubmit={handleSubmit}
         className="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md"
+        style={{ width: "400px" }}
       >
         <div className="mb-4">
           <label
@@ -60,7 +62,7 @@ function SignIn() {
             className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
             id="name"
             type="text"
-            laceholder="name"
+            placeholder="name"
             onChange={(e) => {
               setName(e.target.value);
             }}

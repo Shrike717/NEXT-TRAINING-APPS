@@ -1,7 +1,10 @@
 import { SHA256 as sha256 } from "crypto-js";
 // import prisma client
-import prisma from "../../../../lib/prisma";
+// import prisma from "../../../../lib/prisma";
 import hashPassword from "./signup";
+
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export default async function handle(req, res) {
   if (req.method === "POST") {
@@ -13,6 +16,7 @@ export default async function handle(req, res) {
 }
 
 async function loginUserHandler(req, res) {
+  console.log("[login.js loginUserHandler] req.body", req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -27,7 +31,7 @@ async function loginUserHandler(req, res) {
         name: true,
         email: true,
         password: true,
-        image: true,
+        // image: true,
       },
     });
     if (user && user.password === hashPassword(password)) {
@@ -37,6 +41,7 @@ async function loginUserHandler(req, res) {
       return res.status(401).json({ message: "invalid credentials" });
     }
   } catch (e) {
+    console.error("[login.js loginUserHandler] Error:", e);
     throw new Error(e);
   }
 }

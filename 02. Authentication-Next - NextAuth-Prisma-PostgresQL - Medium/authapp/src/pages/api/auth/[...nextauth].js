@@ -13,6 +13,10 @@ const options = {
           email: credentials.email,
           password: credentials.password,
         };
+        console.log(
+          "[next-auth] CredentialsProvider userCredentials",
+          userCredentials
+        );
 
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/user/login`,

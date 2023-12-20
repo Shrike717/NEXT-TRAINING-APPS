@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
 	Form,
@@ -30,6 +31,8 @@ const FormSchema = z.object({
 const SignInForm = () => {
 	// Router hook:
 	const router = useRouter();
+	const [isClient, setIsClient] = useState(false);
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -38,20 +41,31 @@ const SignInForm = () => {
 		},
 	});
 
+	//  This is a custom hook that will only run on the client side
+	// It prevents the form from rendering on the server side and causing an error caused by two diferent HTML versions
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	if (!isClient) {
+		return null;
+	}
+
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		// console.log(values);
 		const signInData = await signIn('credentials', {
 			email: values.email,
 			password: values.password,
 			redirect: false,
-		}); // This function is provided by next-auth
+		}); // This signIn function is provided by next-auth
 
 		if (signInData?.error) {
 			console.log('[SignInForm] signInData.error', signInData.error);
 		} else {
+			// Refresh the admin page:
+			router.refresh(); // This will refresh the page and the server will check if the user is logged in and redirect to the admin page
 			router.push('/admin');
 		}
-		// console.log('[SignInForm] signInData', signInData);
 	};
 
 	return (

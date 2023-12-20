@@ -47,6 +47,8 @@ const SignUpForm = () => {
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		console.log('[SignUpForm Component] onSubmit', values);
+
+		// Send a POST request to the POST handler on the server. The server will create a new user in the database.
 		const response = await fetch('/api/user', {
 			method: 'POST',
 			headers: {

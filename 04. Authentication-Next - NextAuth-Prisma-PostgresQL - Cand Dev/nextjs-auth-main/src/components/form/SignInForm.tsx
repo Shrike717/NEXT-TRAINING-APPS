@@ -19,6 +19,7 @@ import GoogleSignInButton from '../GoogleSignInButton';
 import { sign } from 'crypto';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 
 const FormSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -32,6 +33,7 @@ const SignInForm = () => {
 	// Router hook:
 	const router = useRouter();
 	const [isClient, setIsClient] = useState(false);
+	const { toast } = useToast();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -60,7 +62,11 @@ const SignInForm = () => {
 		}); // This signIn function is provided by next-auth
 
 		if (signInData?.error) {
-			console.log('[SignInForm] signInData.error', signInData.error);
+			toast({
+				title: 'Error',
+				description: 'Something went wrong',
+				variant: 'destructive',
+			});
 		} else {
 			// Refresh the admin page:
 			router.refresh(); // This will refresh the page and the server will check if the user is logged in and redirect to the admin page

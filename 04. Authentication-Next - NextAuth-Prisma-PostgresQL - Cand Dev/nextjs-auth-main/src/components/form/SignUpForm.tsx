@@ -16,6 +16,8 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import GoogleSignInButton from '../GoogleSignInButton';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 const FormSchema = z
 	.object({
@@ -35,6 +37,9 @@ const FormSchema = z
 const SignUpForm = () => {
 	// Router hook:
 	const router = useRouter();
+	const [isClient, setIsClient] = useState(false);
+	const { toast } = useToast();
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -44,6 +49,16 @@ const SignUpForm = () => {
 			confirmPassword: '',
 		},
 	});
+
+	//  This is a custom hook that will only run on the client side
+	// It prevents the form from rendering on the server side and causing an error caused by two diferent HTML versions
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	if (!isClient) {
+		return null;
+	}
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		console.log('[SignUpForm Component] onSubmit', values);
@@ -65,7 +80,11 @@ const SignUpForm = () => {
 			// After successful sign up, redirect to sign in page:
 			router.push('/sign-in');
 		} else {
-			console.log('Error: Registration failed');
+			toast({
+				title: 'Error',
+				description: 'Registration failed',
+				variant: 'destructive',
+			});
 		}
 	};
 
